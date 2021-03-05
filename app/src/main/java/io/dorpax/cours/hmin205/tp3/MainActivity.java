@@ -22,8 +22,10 @@ public class MainActivity extends AppCompatActivity {
         if ((savedInstanceState != null) && (savedInstanceState.containsKey(USERID_KEY))) {
             userID = savedInstanceState.getString(USERID_KEY);
         } else {
-            userID = generateUserId();
+            userID = generateUserID();
         }
+
+        displayUserID();
     }
 
     @Override
@@ -40,9 +42,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        displayUserID();
     }
 
-    private String generateUserId() {
+    private String generateUserID() {
         return new Random().nextInt(10000) + "";
+    }
+
+    private void displayUserID() {
+        Toast.makeText(this, "Identifiant : " + userID, Toast.LENGTH_SHORT).show();
     }
 }
