@@ -23,9 +23,15 @@ public class MainActivity extends AppCompatActivity {
     public final static String FILENAME_EXTRA = "io.dorpax.cours.hmin205.tp3.extras.FILENAME";
     private String userID;
 
+    private Utilisation utilisation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        utilisation = new Utilisation();
+        getLifecycle().addObserver(utilisation);
+
         setContentView(R.layout.activity_main);
 
         if ((savedInstanceState != null) && (savedInstanceState.containsKey(USERID_KEY))) {
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 fileOutputStream.write((((EditText) child).getText().toString() + "\n").getBytes());
             }
         }
+
+        fileOutputStream.write(("Utilisations : " + utilisation.getNbUtilisations() + "\n").getBytes());
 
         fileOutputStream.close();
 
