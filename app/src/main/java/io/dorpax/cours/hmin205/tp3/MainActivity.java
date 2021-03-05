@@ -7,12 +7,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final static String USERID_KEY = "io.dorpax.cours.hmin205.tp3.USERID_KEY";
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if ((savedInstanceState != null) && (savedInstanceState.containsKey(USERID_KEY))) {
+            userID = savedInstanceState.getString(USERID_KEY);
+        } else {
+            userID = generateUserId();
+        }
     }
 
     @Override
@@ -22,10 +33,16 @@ public class MainActivity extends AppCompatActivity {
         EditText passwordEditTExt = findViewById(R.id.passwordEditText);
         passwordEditTExt.setText(null);
         // Les autres champs sont gardés par défaut.
+
+        savedInstanceState.putString(USERID_KEY, userID);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private String generateUserId() {
+        return new Random().nextInt(10000) + "";
     }
 }
