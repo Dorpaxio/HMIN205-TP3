@@ -1,6 +1,7 @@
 package io.dorpax.cours.hmin205.tp3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.EditText;
@@ -18,7 +19,8 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String USERID_KEY = "io.dorpax.cours.hmin205.tp3.USERID_KEY";
+    private final static String USERID_KEY = "io.dorpax.cours.hmin205.tp3.keys.USERID";
+    public final static String FILENAME_EXTRA = "io.dorpax.cours.hmin205.tp3.extras.FILENAME";
     private String userID;
 
     @Override
@@ -53,17 +55,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSubmit(View view) throws IOException {
-        FileOutputStream fileOutputStream = openFileOutput("infos", Context.MODE_PRIVATE);
+        String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
+        String fileName = name + "-" + userID;
+        FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
         ConstraintLayout layout = findViewById(R.id.main_layout);
 
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
             if (child instanceof EditText) {
-                fileOutputStream.write(((EditText) child).getText().toString().getBytes());
+                fileOutputStream.write((((EditText) child).getText().toString() + "\n").getBytes());
             }
         }
 
         fileOutputStream.close();
+
+        Intent intent = new Intent(this, SubmitActivity.class);
+        intent.putExtra(FILENAME_EXTRA, fileName);
+        startActivity(intent);
     }
 
     private String generateUserID() {
