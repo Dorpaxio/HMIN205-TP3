@@ -13,4 +13,10 @@
     <string name="password">Mot de passe</string>
     <string name="submit">Soumettre</string>
     <string name="infos_label">Informations :</string>
+    <string name="display_planning">Afficher le planning</string>
+    <string name="planning">Planning</string>
+    <string name="h1">8h-10h</string>
+    <string name="h2">10h-12h</string>
+    <string name="h3">14-16h</string>
+    <string name="h4">16h-18h</string>
 </resources>

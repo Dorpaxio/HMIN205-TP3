@@ -9,7 +9,7 @@ public class Utilisation implements LifecycleObserver {
     private int nbUtilisations;
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private void nombreUtilisations() {
+    public void nombreUtilisations() {
         ++nbUtilisations;
     }
 

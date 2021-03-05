@@ -82,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void displayPlanning(View view) {
+        Intent intent = new Intent(this, PlanningActivity.class);
+        startActivity(intent);
+    }
+
     private String generateUserID() {
         return new Random().nextInt(10000) + "";
     }
