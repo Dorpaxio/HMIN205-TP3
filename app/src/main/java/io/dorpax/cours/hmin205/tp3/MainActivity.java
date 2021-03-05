@@ -1,12 +1,19 @@
 package io.dorpax.cours.hmin205.tp3;
 
+import android.content.Context;
 import android.os.PersistableBundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         displayUserID();
+    }
+
+    public void onSubmit(View view) throws IOException {
+        FileOutputStream fileOutputStream = openFileOutput("infos", Context.MODE_PRIVATE);
+        ConstraintLayout layout = findViewById(R.id.main_layout);
+
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof EditText) {
+                fileOutputStream.write(((EditText) child).getText().toString().getBytes());
+            }
+        }
+
+        fileOutputStream.close();
     }
 
     private String generateUserID() {
