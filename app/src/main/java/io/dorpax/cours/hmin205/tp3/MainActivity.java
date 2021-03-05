@@ -18,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+
+        EditText passwordEditTExt = findViewById(R.id.passwordEditText);
+        passwordEditTExt.setText(null);
+        // Les autres champs sont gardés par défaut.
     }
 
     @Override
