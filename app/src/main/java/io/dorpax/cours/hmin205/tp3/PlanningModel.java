@@ -28,7 +28,7 @@ public class PlanningModel extends ViewModel {
     }
 
     public void setSlot(int i, String value) {
-        slots.get(i).setValue(value);
+        slots.get(i).postValue(value);
     }
 
     public MutableLiveData<String> getSlot(int i) {
