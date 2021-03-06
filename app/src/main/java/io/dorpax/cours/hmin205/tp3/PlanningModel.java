@@ -1,10 +1,8 @@
 package io.dorpax.cours.hmin205.tp3;
 
-import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 

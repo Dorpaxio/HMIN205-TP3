@@ -6,19 +6,22 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.room.Room;
+import io.dorpax.cours.hmin205.tp3.data.databases.AppDatabase;
+import io.dorpax.cours.hmin205.tp3.data.dao.PlanningDao;
+import io.dorpax.cours.hmin205.tp3.data.entities.Planning;
 
 import java.io.*;
-import java.util.Date;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class PlanningActivity extends AppCompatActivity {
 
-    private final static String TASK_FILENAME = "tasks.txt";
     private final static String LAST_UPDATE_FILENAME = "last_update";
 
     private PlanningModel planningModel;
+
+    private AppDatabase appDatabase;
+    private PlanningDao planning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +38,14 @@ public class PlanningActivity extends AppCompatActivity {
         TextView slot4 = findViewById(R.id.h4);
         planningModel.getSlot(3).observe(this, slot4::setText);
 
+        appDatabase = Room.databaseBuilder(this, AppDatabase.class, "db-tp3")
+                .allowMainThreadQueries().build();
+        planning = appDatabase.planningDao();
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(shouldUpdate()) {
+                if (shouldUpdate()) {
                     try {
                         update(null);
                     } catch (IOException e) {
@@ -50,31 +57,33 @@ public class PlanningActivity extends AppCompatActivity {
     }
 
     public void update(View view) throws IOException {
-        // Si le fichier n'existe pas je créer un fichier avec 100 fausses tâches pour la simulation
-        if (!fileExists(TASK_FILENAME)) {
-            FileOutputStream fileOutputStream = openFileOutput(TASK_FILENAME, Context.MODE_PRIVATE);
-            for (int i = 0; i < 100; i++) {
-                fileOutputStream.write((i + "\n").getBytes());
+        planning.nbPlannings().observe(this, nbPlannings -> {
+            System.out.println(nbPlannings);
+            if (nbPlannings == 0) {
+                Random rand = new Random();
+                for (int i = 0; i < 10; i++) {
+                    planning.insert(new Planning(i, rand.nextInt(100) + "",
+                            rand.nextInt(100) + "", rand.nextInt(100) + "",
+                            rand.nextInt(100) + ""));
+
+                }
+                return;
             }
-            fileOutputStream.close();
-        }
 
-        FileInputStream fileInputStream = openFileInput(TASK_FILENAME);
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            planning.getPlanning(new Random().nextInt(10)).observe(this, p -> {
+                planningModel.setSlot(0, p.task1);
+                planningModel.setSlot(1, p.task2);
+                planningModel.setSlot(2, p.task3);
+                planningModel.setSlot(3, p.task4);
+            });
+        });
 
-        int start = new Random().nextInt(96);
-        for (int i = 0; i < start; i++) bufferedReader.readLine();
 
-        for (int i = 0; i < 4; i++) {
-            planningModel.setSlot(i, bufferedReader.readLine());
-        }
-        fileInputStream.close();
         updateLastUpdate();
     }
 
     private Date getLastUpdate() throws IOException {
-        if(!fileExists(LAST_UPDATE_FILENAME)) {
+        if (!fileExists(LAST_UPDATE_FILENAME)) {
             updateLastUpdate();
         }
 
@@ -113,7 +122,7 @@ public class PlanningActivity extends AppCompatActivity {
     private boolean fileExists(String filename) {
         boolean exists = false;
         for (String f : fileList()) {
-            if(f.equals(filename)) {
+            if (f.equals(filename)) {
                 exists = true;
                 break;
             }
