@@ -1,18 +1,37 @@
 package io.dorpax.cours.hmin205.tp3;
 
+import android.content.Context;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlanningModel extends ViewModel {
 
-    private String slots[] = {"Rencontre client Dupont", "Travailler dossier recrutement",
+    private final List<MutableLiveData<String>> slots = new ArrayList<>();
+
+    private String intitules[] = {"Rencontre client Dupont", "Travailler dossier recrutement",
             "Réunion équipe", "Préparation dossier vente"};
 
+    public PlanningModel() {
+        for (String intitule : intitules) {
+            MutableLiveData<String> liveData = new MutableLiveData<>();
+            liveData.setValue(intitule);
+            this.slots.add(liveData);
+        }
+    }
 
-    public String[] getSlots() {
+    public List<MutableLiveData<String>> getSlots() {
         return slots;
     }
 
-    public String getSlot(int i) {
-        return slots[i];
+    public void setSlot(int i, String value) {
+        slots.get(i).setValue(value);
+    }
+
+    public MutableLiveData<String> getSlot(int i) {
+        return slots.get(i);
     }
 }
